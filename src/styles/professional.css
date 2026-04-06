@@ -1,0 +1,284 @@
+/* ============================================================
+   PROFESSIONAL THEME — Light Corporate
+   ============================================================ */
+
+:root {
+  /* --- Fonts --- */
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
+
+  /* --- Base colors --- */
+  --color-bg: #f8f9fa;
+  --color-text: #24292f;
+  --color-muted: #57606a;
+  --color-link: #0550ae;
+  --color-border: #d0d7de;
+  --color-border-hover: #8b949e;
+
+  /* --- Card --- */
+  --color-card-bg: #ffffff;
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* --- Code --- */
+  --color-code-bg: #eff1f3;
+  --color-pre-bg: #24292f;
+
+  /* --- Header --- */
+  --color-header-bg: #ffffff;
+  --color-header-border: #d0d7de;
+  --color-header-text: #24292f;
+
+  /* --- Role colors (light) --- */
+  --role-c-level: #cf222e;
+  --role-it-admin: #0550ae;
+  --role-end-user: #1a7f37;
+  --role-red-teamer: #9a6700;
+
+  /* --- Severity badges --- */
+  --severity-critical-bg: #ffebe9;
+  --severity-critical-text: #cf222e;
+  --severity-high-bg: #fff8c5;
+  --severity-high-text: #9a6700;
+  --severity-medium-bg: #ddf4ff;
+  --severity-medium-text: #0550ae;
+  --severity-low-bg: #dafbe1;
+  --severity-low-text: #1a7f37;
+}
+
+/* --- Header --- */
+.site-header {
+  background-color: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-header-border);
+  padding: 0.75rem 0;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-header .nav-brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-header-text);
+}
+
+.site-header .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.site-header .nav-links a {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.site-header .nav-links a:hover {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+/* --- Hero section --- */
+.hero {
+  text-align: center;
+  padding: 4rem 0 2rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  color: var(--color-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* --- Mode cards --- */
+.mode-card {
+  border-radius: 12px;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-card-bg);
+  padding: 2rem;
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.mode-card:hover {
+  border-color: var(--color-link);
+  box-shadow: 0 4px 16px rgba(5, 80, 174, 0.12);
+  text-decoration: none;
+}
+
+.mode-card h2 {
+  font-size: 1.375rem;
+  margin-bottom: 0.5rem;
+}
+
+.mode-card p {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.mode-card.mode-scenario {
+  background-color: #0d1117;
+  color: #c9d1d9;
+  border-color: #30363d;
+}
+
+.mode-card.mode-scenario:hover {
+  border-color: #00ff41;
+  box-shadow: 0 4px 16px rgba(0, 255, 65, 0.1);
+}
+
+.mode-card.mode-scenario h2 {
+  color: #00ff41;
+  font-family: var(--font-mono);
+}
+
+.mode-card.mode-scenario p {
+  color: #8b949e;
+}
+
+/* --- Role cards --- */
+.role-card {
+  border-radius: 12px;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-card-bg);
+  padding: 1.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.role-card:hover {
+  text-decoration: none;
+}
+
+.role-card h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.375rem;
+}
+
+.role-card p {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.role-card .role-cta {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.role-card[data-role="c-level"] { border-left: 4px solid var(--role-c-level); }
+.role-card[data-role="c-level"]:hover { border-color: var(--role-c-level); box-shadow: 0 4px 12px rgba(207, 34, 46, 0.1); }
+.role-card[data-role="c-level"] h3 { color: var(--role-c-level); }
+.role-card[data-role="c-level"] .role-cta { color: var(--role-c-level); }
+
+.role-card[data-role="it-admin"] { border-left: 4px solid var(--role-it-admin); }
+.role-card[data-role="it-admin"]:hover { border-color: var(--role-it-admin); box-shadow: 0 4px 12px rgba(5, 80, 174, 0.1); }
+.role-card[data-role="it-admin"] h3 { color: var(--role-it-admin); }
+.role-card[data-role="it-admin"] .role-cta { color: var(--role-it-admin); }
+
+.role-card[data-role="end-user"] { border-left: 4px solid var(--role-end-user); }
+.role-card[data-role="end-user"]:hover { border-color: var(--role-end-user); box-shadow: 0 4px 12px rgba(26, 127, 55, 0.1); }
+.role-card[data-role="end-user"] h3 { color: var(--role-end-user); }
+.role-card[data-role="end-user"] .role-cta { color: var(--role-end-user); }
+
+.role-card[data-role="red-teamer"] { border-left: 4px solid var(--role-red-teamer); }
+.role-card[data-role="red-teamer"]:hover { border-color: var(--role-red-teamer); box-shadow: 0 4px 12px rgba(154, 103, 0, 0.1); }
+.role-card[data-role="red-teamer"] h3 { color: var(--role-red-teamer); }
+.role-card[data-role="red-teamer"] .role-cta { color: var(--role-red-teamer); }
+
+/* --- Breadcrumbs --- */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumbs a {
+  color: var(--color-muted);
+}
+
+.breadcrumbs a:hover {
+  color: var(--color-link);
+}
+
+.breadcrumbs .separator {
+  color: var(--color-border);
+}
+
+/* --- Article content --- */
+.article-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.article-content h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-content p {
+  margin-bottom: 1rem;
+}
+
+.article-content ul,
+.article-content ol {
+  margin-bottom: 1rem;
+}
+
+.article-content li {
+  margin-bottom: 0.375rem;
+}
+
+/* --- Progress bar --- */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* --- Footer --- */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 2rem 0;
+  margin-top: 4rem;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
