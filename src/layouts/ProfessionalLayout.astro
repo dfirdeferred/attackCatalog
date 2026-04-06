@@ -9,16 +9,19 @@ const { title, description } = Astro.props;
 import "../styles/professional.css";
 import BaseLayout from "./BaseLayout.astro";
 import Header from "../components/Header.astro";
+import AchievementToast from "../components/AchievementToast.astro";
 ---
 
 <BaseLayout title={title} description={description} theme="professional">
   <Header mode="professional" />
   <main class="container py-6">
     <slot />
+    <AchievementToast />
   </main>
   <footer class="site-footer">
     <div class="container">
       Built from <a href="https://netwrix.com/en/cybersecurity-glossary/cyber-security-attacks/" target="_blank" rel="noopener">Netwrix's 33-article attack catalog</a>.
     </div>
   </footer>
+  <div class="toast-container" id="toast-container"></div>
 </BaseLayout>

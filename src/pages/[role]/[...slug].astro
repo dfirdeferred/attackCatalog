@@ -6,6 +6,7 @@ import CrossRoleBadge from "@components/CrossRoleBadge.astro";
 import { ROLES, getRoleBySlug, isValidRoleSlug, type RoleSlug } from "@lib/roles";
 import { getChainsForAttack, type AttackSlug } from "@lib/chains";
 import { getCollection, render } from "astro:content";
+import MarkAsRead from "@components/MarkAsRead.astro";
 
 export async function getStaticPaths() {
   const attacks = await getCollection("attacks");
@@ -122,7 +123,6 @@ const breadcrumbs = [
     <!-- Dig Deeper -->
     <DigDeeper attacks={relatedAttacks} roleSlug={roleSlug} />
 
-    <!-- Mark as Read placeholder — wired up in Task 12 -->
-    <div id="mark-as-read" data-page-id={`ref:${roleSlug}:${attackSlug}`}></div>
+    <MarkAsRead pageId={`ref:${roleSlug}:${attackSlug}`} mode="reference" />
   </article>
 </ProfessionalLayout>

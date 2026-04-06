@@ -9,12 +9,14 @@ const { title, description } = Astro.props;
 import "../styles/terminal.css";
 import BaseLayout from "./BaseLayout.astro";
 import Header from "../components/Header.astro";
+import AchievementToast from "../components/AchievementToast.astro";
 ---
 
 <BaseLayout title={title} description={description} theme="terminal">
   <Header mode="terminal" />
   <main class="container py-6">
     <slot />
+    <AchievementToast />
   </main>
   <footer class="site-footer">
     <div class="container">

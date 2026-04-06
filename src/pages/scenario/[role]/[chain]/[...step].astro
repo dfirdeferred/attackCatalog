@@ -5,6 +5,7 @@ import ScenarioChoice from "@components/ScenarioChoice.astro";
 import { ROLES, getRoleBySlug, type RoleSlug } from "@lib/roles";
 import { CHAINS, getChainBySlug, type ChainSlug } from "@lib/chains";
 import { getCollection, render } from "astro:content";
+import MarkAsRead from "@components/MarkAsRead.astro";
 
 export async function getStaticPaths() {
   const scenarios = await getCollection("scenarios");
@@ -127,7 +128,6 @@ const pageId = isDebrief
       </>
     )}
 
-    <!-- Mark as Read placeholder — wired up in Task 12 -->
-    <div id="mark-as-read" data-page-id={pageId}></div>
+    <MarkAsRead pageId={pageId} mode="scenario" />
   </article>
 </TerminalLayout>

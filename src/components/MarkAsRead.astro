@@ -73,6 +73,26 @@ const { pageId, mode } = Astro.props;
       }
     }
 
+    function computeThreatLevel(totalPages: number): string {
+      // 33 attacks x 4 roles = 132 reference pages as baseline
+      const percentage = Math.min(totalPages / 132, 1);
+      if (percentage >= 1.0) return "impenetrable";
+      if (percentage >= 0.75) return "fortified";
+      if (percentage >= 0.50) return "hardened";
+      if (percentage >= 0.30) return "informed";
+      if (percentage >= 0.10) return "aware";
+      return "vulnerable";
+    }
+
+    function updateThreatBadge(level: string): void {
+      const badge = document.getElementById("threat-badge");
+      if (badge) {
+        const label = badge.querySelector(".threat-badge-label");
+        badge.setAttribute("data-level", level);
+        if (label) label.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+      }
+    }
+
     function markRead(): void {
       try {
         const raw = localStorage.getItem("attackCatalog");
@@ -80,7 +100,16 @@ const { pageId, mode } = Astro.props;
         if (!data.pages) data.pages = {};
         if (data.pages[pageId!]) return;
         data.pages[pageId!] = { readAt: Date.now(), mode };
+
+        // Compute and store threat level
+        const totalPages = Object.keys(data.pages).length;
+        const level = computeThreatLevel(totalPages);
+        data.threatLevel = level;
+
         localStorage.setItem("attackCatalog", JSON.stringify(data));
+
+        // Update ThreatBadge in the header
+        updateThreatBadge(level);
       } catch {
         // localStorage unavailable
       }
