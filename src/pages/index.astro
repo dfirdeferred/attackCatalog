@@ -1,0 +1,134 @@
+---
+import ProfessionalLayout from "../layouts/ProfessionalLayout.astro";
+import { ROLES } from "../lib/roles";
+---
+
+<ProfessionalLayout title="Home">
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Attack Catalog</h1>
+    <p>33 attack vectors. 7 kill chains. 4 perspectives. Choose your path.</p>
+  </section>
+
+  <!-- Mode Selection -->
+  <section class="mt-6 mb-6">
+    <div class="grid-2">
+      <a href="#roles" class="mode-card mode-reference" id="mode-reference">
+        <h2>Learn at Your Own Pace</h2>
+        <p>
+          Browse 33 attack techniques organized by category. Read at your own pace
+          with role-specific context, cross-references, and dig-deeper links.
+        </p>
+        <span class="mode-label mt-2" style="display:inline-block; font-size:0.8125rem; font-weight:600; color:var(--color-link);">
+          Reference Mode &rarr;
+        </span>
+      </a>
+
+      <a href="#roles" class="mode-card mode-scenario" id="mode-scenario">
+        <h2>Play the Scenario</h2>
+        <p>
+          Step into 7 realistic kill chains. Make decisions as the attack unfolds.
+          Learn by doing across domain takeovers, cloud breaches, and more.
+        </p>
+        <span class="mode-label mt-2" style="display:inline-block; font-size:0.8125rem; font-weight:600; color:#00ff41;">
+          Scenario Mode &rarr;
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Role Selection -->
+  <section id="roles" class="mt-4 mb-8">
+    <h2 class="text-center mb-4" style="font-size:1.5rem; font-weight:700;">
+      Choose Your Role
+    </h2>
+    <div class="grid-2x2" id="role-grid">
+      {ROLES.map((role) => (
+        <a
+          href={`/${role.slug}/`}
+          class="role-card"
+          data-role={role.slug}
+          id={`role-card-${role.slug}`}
+        >
+          <h3>{role.name}</h3>
+          <p>{role.description}</p>
+          <span class="role-cta">Start path &rarr;</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</ProfessionalLayout>
+
+<script>
+  /**
+   * Mode selection logic:
+   * - Clicking "Reference Mode" sets links to /[role]/
+   * - Clicking "Scenario Mode" sets links to /scenario/[role]/
+   * - Active mode is stored in sessionStorage for the landing page only
+   */
+  function initModeSelection() {
+    const refCard = document.getElementById("mode-reference");
+    const scenCard = document.getElementById("mode-scenario");
+    const roleGrid = document.getElementById("role-grid");
+
+    if (!refCard || !scenCard || !roleGrid) return;
+
+    const roleCards = roleGrid.querySelectorAll<HTMLAnchorElement>(".role-card");
+
+    function setMode(mode: string) {
+      roleCards.forEach((card) => {
+        const slug = card.getAttribute("data-role");
+        if (!slug) return;
+
+        if (mode === "scenario") {
+          card.setAttribute("href", `/scenario/${slug}/`);
+        } else {
+          card.setAttribute("href", `/${slug}/`);
+        }
+      });
+
+      if (mode === "scenario") {
+        scenCard!.style.borderColor = "#00ff41";
+        scenCard!.style.boxShadow = "0 4px 16px rgba(0, 255, 65, 0.15)";
+        refCard!.style.borderColor = "";
+        refCard!.style.boxShadow = "";
+      } else {
+        refCard!.style.borderColor = "var(--color-link)";
+        refCard!.style.boxShadow = "0 4px 16px rgba(5, 80, 174, 0.12)";
+        scenCard!.style.borderColor = "";
+        scenCard!.style.boxShadow = "";
+      }
+
+      try {
+        sessionStorage.setItem("attackCatalog-mode", mode);
+      } catch {
+        // sessionStorage unavailable
+      }
+    }
+
+    refCard.addEventListener("click", (e) => {
+      e.preventDefault();
+      setMode("reference");
+      document.getElementById("roles")?.scrollIntoView({ behavior: "smooth" });
+    });
+
+    scenCard.addEventListener("click", (e) => {
+      e.preventDefault();
+      setMode("scenario");
+      document.getElementById("roles")?.scrollIntoView({ behavior: "smooth" });
+    });
+
+    // Restore previous mode selection
+    try {
+      const saved = sessionStorage.getItem("attackCatalog-mode");
+      if (saved === "scenario" || saved === "reference") {
+        setMode(saved);
+      }
+    } catch {
+      // sessionStorage unavailable
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", initModeSelection);
+  document.addEventListener("astro:page-load", initModeSelection);
+</script>
