@@ -1,0 +1,31 @@
+---
+import type { RoleSlug } from "@lib/roles";
+import type { Chain } from "@lib/chains";
+
+export interface Props {
+  chain: Chain;
+  roleSlug: RoleSlug;
+}
+
+const { chain, roleSlug } = Astro.props;
+const firstAttack = chain.attacks[0];
+---
+
+<a href={`/scenario/${roleSlug}/${chain.slug}/${firstAttack}/`} class="chain-card">
+  <h3>{chain.name}</h3>
+  <p>{chain.description}</p>
+  <div class="chain-meta" style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem;">
+    <div class="chain-attacks">
+      {chain.attacks.map((attack) => (
+        <span class="chain-attack-tag">{attack}</span>
+      ))}
+    </div>
+    <span class="chain-count" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted);">
+      {chain.attacks.length} chapters
+    </span>
+  </div>
+  <!-- Progress placeholder — wired up in Task 12 -->
+  <div class="progress-bar mt-2" id={`chain-progress-${chain.slug}`}>
+    <div class="progress-bar-fill" style="width: 0%;"></div>
+  </div>
+</a>

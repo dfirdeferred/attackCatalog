@@ -1,0 +1,25 @@
+---
+export interface Choice {
+  label: string;
+  href: string;
+}
+
+export interface Props {
+  choices: Choice[];
+}
+
+const { choices } = Astro.props;
+---
+
+{choices.length > 0 && (
+  <div class="scenario-choices">
+    <p class="choice-prompt" style="font-family: var(--font-mono); font-size: 0.875rem; color: var(--color-amber); margin-bottom: 0.5rem;">
+      What do you do next?
+    </p>
+    {choices.map((choice) => (
+      <a href={choice.href} class="scenario-choice">
+        {choice.label}
+      </a>
+    ))}
+  </div>
+)}
