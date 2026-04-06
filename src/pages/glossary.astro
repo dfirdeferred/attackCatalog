@@ -16,7 +16,7 @@ const terms: GlossaryTerm[] = allAttacks
   .map((attack) => ({
     term: attack.data.title.replace(/ Attack$/, "").replace(/ Vulnerability$/, ""),
     definition: `${attack.data.severity} severity ${attack.data.category.toLowerCase()} technique targeting ${attack.data.targets.join(", ")}.`,
-    attackSlug: attack.data.slug,
+    attackSlug: attack.data.slug || attack.id.replace(/\.mdx?$/, ''),
   }))
   .sort((a, b) => a.term.localeCompare(b.term));
 
