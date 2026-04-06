@@ -1,0 +1,29 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  theme: "professional" | "terminal";
+}
+
+const {
+  title,
+  description = "33 attack vectors. 7 kill chains. 4 perspectives. Choose your path.",
+  theme,
+} = Astro.props;
+
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en" data-theme={theme}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title} | Attack Catalog</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

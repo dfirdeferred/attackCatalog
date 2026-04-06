@@ -1,0 +1,24 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+import "../styles/professional.css";
+import BaseLayout from "./BaseLayout.astro";
+import Header from "../components/Header.astro";
+---
+
+<BaseLayout title={title} description={description} theme="professional">
+  <Header mode="professional" />
+  <main class="container py-6">
+    <slot />
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      Built from <a href="https://netwrix.com/en/cybersecurity-glossary/cyber-security-attacks/" target="_blank" rel="noopener">Netwrix's 33-article attack catalog</a>.
+    </div>
+  </footer>
+</BaseLayout>
