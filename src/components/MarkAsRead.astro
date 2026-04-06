@@ -74,13 +74,12 @@ const { pageId, mode } = Astro.props;
     }
 
     function computeThreatLevel(totalPages: number): string {
-      // 33 attacks x 4 roles = 132 reference pages as baseline
-      const percentage = Math.min(totalPages / 132, 1);
-      if (percentage >= 1.0) return "impenetrable";
-      if (percentage >= 0.75) return "fortified";
-      if (percentage >= 0.50) return "hardened";
-      if (percentage >= 0.30) return "informed";
-      if (percentage >= 0.10) return "aware";
+      // Use a friendlier scale - moves faster with fewer pages
+      if (totalPages >= 50) return "impenetrable";
+      if (totalPages >= 35) return "fortified";
+      if (totalPages >= 20) return "hardened";
+      if (totalPages >= 10) return "informed";
+      if (totalPages >= 3) return "aware";
       return "vulnerable";
     }
 

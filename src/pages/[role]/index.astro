@@ -70,4 +70,24 @@ const breadcrumbs = [
       </div>
     </section>
   ))}
+  <script>
+    function updateRoleProgress() {
+      try {
+        const progressBar = document.querySelector(".progress-bar");
+        if (!progressBar) return;
+        const roleSlug = progressBar.id.replace("progress-", "");
+        const raw = localStorage.getItem("attackCatalog");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        const pages = data.pages || {};
+        const readCount = Object.keys(pages).filter(k => k.startsWith(`ref:${roleSlug}:`)).length;
+        const total = 33;
+        const pct = Math.min(Math.round((readCount / total) * 100), 100);
+        const fill = progressBar.querySelector(".progress-bar-fill") as HTMLElement;
+        if (fill) fill.style.width = `${pct}%`;
+      } catch {}
+    }
+    document.addEventListener("DOMContentLoaded", updateRoleProgress);
+    document.addEventListener("astro:page-load", updateRoleProgress);
+  </script>
 </ProfessionalLayout>

@@ -8,6 +8,59 @@
 
 <div id="achievement-toast-island"></div>
 
+<style>
+  .achievement-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: #0d1117;
+    border: 1px solid #00ff41;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    color: #c9d1d9;
+    font-family: "JetBrains Mono", monospace;
+    z-index: 1000;
+    animation: toast-in 0.3s ease forwards;
+    box-shadow: 0 4px 20px rgba(0, 255, 65, 0.15);
+    max-width: 320px;
+  }
+
+  .achievement-toast.leaving {
+    animation: toast-out 0.3s ease forwards;
+  }
+
+  .achievement-toast .toast-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .achievement-toast .toast-title {
+    color: #00ff41;
+    font-weight: 700;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .achievement-toast .toast-title::before {
+    content: "\1F3C6 ";
+  }
+
+  .achievement-toast .toast-desc {
+    font-size: 0.75rem;
+    color: #8b949e;
+  }
+
+  @keyframes toast-in {
+    from { transform: translateY(100%) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  @keyframes toast-out {
+    from { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: translateY(100%) scale(0.95); opacity: 0; }
+  }
+</style>
+
 <script>
   const ACHIEVEMENTS_MAP: Record<string, { name: string; description: string }> = {
     "first-contact": { name: "First Contact", description: "Read your first page" },
@@ -57,19 +110,35 @@
       const pages = data.pages || {};
       const currentAchievements: string[] = data.achievements || [];
 
-      // Simple inline achievement checks (mirrors achievements.ts logic)
+      // Inline achievement checks (mirrors achievements.ts logic)
       const pageCount = Object.keys(pages).length;
+      const refPages = (role: string) => Object.keys(pages).filter(k => k.startsWith(`ref:${role}:`)).length;
+      const scenarioPages = (role: string, chain: string) => Object.keys(pages).filter(k => k.startsWith(`scenario:${role}:${chain}:`)).length;
+
       const checks: [string, boolean][] = [
         ["first-contact", pageCount >= 1],
-        [
-          "explorer",
-          ["c-level", "it-admin", "end-user", "red-teamer"].every(
-            (role) =>
-              Object.keys(pages).some(
-                (k) => k.startsWith(`ref:${role}:`) || k.startsWith(`scenario:${role}:`)
-              )
-          ),
-        ],
+        ["role-player", ["c-level","it-admin","end-user","red-teamer"].some(r => refPages(r) >= 33)],
+        ["chain-breaker", ["domain-takeover","silent-persistence","cloud-bridge","service-account-heist","zero-day-cascade","physical-vector","ai-breach"].some(c =>
+          ["c-level","it-admin","end-user","red-teamer"].some(r => {
+            const chainLengths: Record<string, number> = {"domain-takeover":7,"silent-persistence":6,"cloud-bridge":5,"service-account-heist":6,"zero-day-cascade":6,"physical-vector":5,"ai-breach":4};
+            return scenarioPages(r, c) >= chainLengths[c];
+          })
+        )],
+        ["c-suite-ready", refPages("c-level") >= 33],
+        ["sysadmin-shield", refPages("it-admin") >= 33],
+        ["street-smart", refPages("end-user") >= 33],
+        ["red-badge", refPages("red-teamer") >= 33],
+        ["domain-defender", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "domain-takeover") >= 7)],
+        ["ghost-hunter", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "silent-persistence") >= 6)],
+        ["cloud-watcher", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "cloud-bridge") >= 5)],
+        ["key-master", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "service-account-heist") >= 6)],
+        ["zero-day-survivor", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "zero-day-cascade") >= 6)],
+        ["signal-catcher", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "physical-vector") >= 5)],
+        ["prompt-guardian", ["c-level","it-admin","end-user","red-teamer"].some(r => scenarioPages(r, "ai-breach") >= 4)],
+        ["explorer", ["c-level","it-admin","end-user","red-teamer"].every(r =>
+          Object.keys(pages).some(k => k.startsWith(`ref:${r}:`) || k.startsWith(`scenario:${r}:`))
+        )],
+        ["omniscient", pageCount >= 132],
       ];
 
       const newlyUnlocked: string[] = [];

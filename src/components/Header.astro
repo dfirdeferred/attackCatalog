@@ -18,8 +18,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <li><a href={`${base}/`}>Home</a></li>
         <li><a href={`${base}/progress/`}>Progress</a></li>
         <li><a href={`${base}/glossary/`}>Glossary</a></li>
-        <li><ThreatBadge /></li>
+        <li><ThreatBadge /><span class="pages-read" id="pages-read-count" style="font-size: 0.75rem; color: var(--color-muted); margin-left: 0.5rem;"></span></li>
       </ul>
     </nav>
   </div>
 </header>
+
+<script>
+  function updatePagesRead() {
+    const el = document.getElementById("pages-read-count");
+    if (!el) return;
+    try {
+      const raw = localStorage.getItem("attackCatalog");
+      if (!raw) { el.textContent = "0 pages read"; return; }
+      const data = JSON.parse(raw);
+      const count = Object.keys(data.pages || {}).length;
+      el.textContent = `${count} page${count !== 1 ? 's' : ''} read`;
+    } catch { el.textContent = ""; }
+  }
+  document.addEventListener("DOMContentLoaded", updatePagesRead);
+  document.addEventListener("astro:page-load", updatePagesRead);
+  document.addEventListener("attackCatalog:pageRead", updatePagesRead);
+</script>
