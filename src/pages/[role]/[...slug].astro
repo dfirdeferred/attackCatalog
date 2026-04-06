@@ -26,6 +26,7 @@ export async function getStaticPaths() {
 
 const { attack, role } = Astro.props;
 const { Content } = await render(attack);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const roleSlug = role.slug as RoleSlug;
 const roleData = attack.data.roles[roleSlug];
@@ -53,8 +54,8 @@ const relatedAttacks = allAttacks
 const chains = getChainsForAttack(attackSlug as AttackSlug);
 
 const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: role.name, href: `/${roleSlug}/` },
+  { label: "Home", href: `${base}/` },
+  { label: role.name, href: `${base}/${roleSlug}/` },
   { label: attack.data.title },
 ];
 ---
@@ -110,7 +111,7 @@ const breadcrumbs = [
         <h3 class="text-small text-muted mb-1">See this in Scenario Mode:</h3>
         <div style="display: flex; flex-direction: column; gap: 0.375rem;">
           {chains.map((chain) => (
-            <a href={`/scenario/${roleSlug}/${chain.slug}/${attackSlug}/`} class="text-small">
+            <a href={`${base}/scenario/${roleSlug}/${chain.slug}/${attackSlug}/`} class="text-small">
               {chain.name} &rarr;
             </a>
           ))}

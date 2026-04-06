@@ -7,16 +7,17 @@ export interface Props {
 
 const { mode } = Astro.props;
 const brandText = mode === "terminal" ? "attack_catalog" : "Attack Catalog";
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <header class="site-header">
   <div class="container">
     <nav>
-      <a href="/" class="nav-brand">{brandText}</a>
+      <a href={`${base}/`} class="nav-brand">{brandText}</a>
       <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/progress/">Progress</a></li>
-        <li><a href="/glossary/">Glossary</a></li>
+        <li><a href={`${base}/`}>Home</a></li>
+        <li><a href={`${base}/progress/`}>Progress</a></li>
+        <li><a href={`${base}/glossary/`}>Glossary</a></li>
         <li><ThreatBadge /></li>
       </ul>
     </nav>

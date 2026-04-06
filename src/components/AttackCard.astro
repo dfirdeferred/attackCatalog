@@ -12,6 +12,7 @@ export interface Props {
 }
 
 const { attack, roleSlug } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const severityClass = (() => {
   switch (attack.severity) {
@@ -30,7 +31,7 @@ const severityClass = (() => {
 })();
 ---
 
-<a href={`/${roleSlug}/${attack.slug}/`} class="card attack-card">
+<a href={`${base}/${roleSlug}/${attack.slug}/`} class="card attack-card">
   <div class="attack-card-header">
     <span class={`badge ${severityClass}`}>{attack.severity}</span>
     <span class="attack-card-category text-muted text-small">{attack.category}</span>

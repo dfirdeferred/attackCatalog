@@ -9,9 +9,10 @@ export interface Props {
 
 const { chain, roleSlug } = Astro.props;
 const firstAttack = chain.attacks[0];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<a href={`/scenario/${roleSlug}/${chain.slug}/${firstAttack}/`} class="chain-card">
+<a href={`${base}/scenario/${roleSlug}/${chain.slug}/${firstAttack}/`} class="chain-card">
   <h3>{chain.name}</h3>
   <p>{chain.description}</p>
   <div class="chain-meta" style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem;">

@@ -13,8 +13,9 @@ if (!role) {
   throw new Error(`Invalid role slug: ${roleSlug}`);
 }
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href =
-  mode === "scenario" ? `/scenario/${role.slug}/` : `/${role.slug}/`;
+  mode === "scenario" ? `${base}/scenario/${role.slug}/` : `${base}/${role.slug}/`;
 ---
 
 <a href={href} class="role-card" data-role={role.slug}>

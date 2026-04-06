@@ -12,9 +12,10 @@ export function getStaticPaths() {
 }
 
 const { role: roleSlug } = Astro.params;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 if (!isValidRoleSlug(roleSlug)) {
-  return Astro.redirect("/");
+  return Astro.redirect(`${base}/`);
 }
 
 const role = getRoleBySlug(roleSlug as RoleSlug)!;
@@ -31,7 +32,7 @@ for (const attack of allAttacks) {
 }
 
 const breadcrumbs = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: `${base}/` },
   { label: role.name },
 ];
 ---

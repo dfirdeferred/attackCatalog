@@ -47,6 +47,7 @@ const { role: roleSlug, chain: chainSlug, step } = Astro.params;
 const { Content } = await render(scenario);
 
 const role = getRoleBySlug(roleSlug as RoleSlug)!;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const isDebrief = step === "debrief" || scenario.data.isDebrief;
 
 // Calculate chapter progress
@@ -57,13 +58,13 @@ const chapterNumber = currentIndex + 1;
 // Build choice links
 const choices = scenario.data.choices.map((choice: { label: string; next: string }) => ({
   label: choice.label,
-  href: `/scenario/${roleSlug}/${chainSlug}/${choice.next}/`,
+  href: `${base}/scenario/${roleSlug}/${chainSlug}/${choice.next}/`,
 }));
 
 const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: `Scenario: ${role.name}`, href: `/scenario/${roleSlug}/` },
-  { label: chain.name, href: `/scenario/${roleSlug}/${chainSlug}/${chain.attacks[0]}/` },
+  { label: "Home", href: `${base}/` },
+  { label: `Scenario: ${role.name}`, href: `${base}/scenario/${roleSlug}/` },
+  { label: chain.name, href: `${base}/scenario/${roleSlug}/${chainSlug}/${chain.attacks[0]}/` },
   { label: isDebrief ? "Debrief" : `Chapter ${chapterNumber}` },
 ];
 
@@ -95,7 +96,7 @@ const pageId = isDebrief
           </h3>
           <div style="display: flex; flex-direction: column; gap: 0.375rem;">
             {chain.attacks.map((attack) => (
-              <a href={`/${roleSlug}/${attack}/`} class="reference-link">
+              <a href={`${base}/${roleSlug}/${attack}/`} class="reference-link">
                 {attack}
               </a>
             ))}
@@ -109,7 +110,7 @@ const pageId = isDebrief
         </div>
 
         <!-- Link to full reference article -->
-        <a href={`/${roleSlug}/${scenario.data.attack}/`} class="reference-link">
+        <a href={`${base}/${roleSlug}/${scenario.data.attack}/`} class="reference-link">
           Read the full article
         </a>
 
@@ -118,7 +119,7 @@ const pageId = isDebrief
 
         {choices.length === 0 && (
           <div class="mt-4">
-            <a href={`/scenario/${roleSlug}/${chainSlug}/debrief/`} class="scenario-choice" style="text-align: center;">
+            <a href={`${base}/scenario/${roleSlug}/${chainSlug}/debrief/`} class="scenario-choice" style="text-align: center;">
               Mission complete. View debrief &rarr;
             </a>
           </div>

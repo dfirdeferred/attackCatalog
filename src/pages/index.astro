@@ -1,6 +1,7 @@
 ---
 import ProfessionalLayout from "../layouts/ProfessionalLayout.astro";
 import { ROLES } from "../lib/roles";
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <ProfessionalLayout title="Home">
@@ -42,10 +43,10 @@ import { ROLES } from "../lib/roles";
     <h2 class="text-center mb-4" style="font-size:1.5rem; font-weight:700;">
       Choose Your Role
     </h2>
-    <div class="grid-2x2" id="role-grid">
+    <div class="grid-2x2" id="role-grid" data-base={base}>
       {ROLES.map((role) => (
         <a
-          href={`/${role.slug}/`}
+          href={`${base}/${role.slug}/`}
           class="role-card"
           data-role={role.slug}
           id={`role-card-${role.slug}`}
@@ -73,6 +74,7 @@ import { ROLES } from "../lib/roles";
 
     if (!refCard || !scenCard || !roleGrid) return;
 
+    const baseUrl = roleGrid.getAttribute("data-base") || "";
     const roleCards = roleGrid.querySelectorAll<HTMLAnchorElement>(".role-card");
 
     function setMode(mode: string) {
@@ -81,9 +83,9 @@ import { ROLES } from "../lib/roles";
         if (!slug) return;
 
         if (mode === "scenario") {
-          card.setAttribute("href", `/scenario/${slug}/`);
+          card.setAttribute("href", `${baseUrl}/scenario/${slug}/`);
         } else {
-          card.setAttribute("href", `/${slug}/`);
+          card.setAttribute("href", `${baseUrl}/${slug}/`);
         }
       });
 
