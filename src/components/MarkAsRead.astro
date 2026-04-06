@@ -1,0 +1,141 @@
+---
+export interface Props {
+  pageId: string;
+  mode: "reference" | "scenario";
+}
+
+const { pageId, mode } = Astro.props;
+---
+
+<div class="mark-as-read" id="mark-as-read-island" data-page-id={pageId} data-mode={mode}>
+  <button class="mark-read-btn" id="mark-read-btn" type="button" style="display: none;">
+    Mark as read
+  </button>
+  <span class="mark-read-done" id="mark-read-done" style="display: none;">
+    &#10003; Read
+  </span>
+</div>
+
+<style>
+  .mark-as-read {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  .mark-read-btn {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-card-bg);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .mark-read-btn:hover {
+    border-color: var(--color-link, var(--color-green));
+    background-color: var(--color-code-bg);
+  }
+
+  .mark-read-done {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-green, #1a7f37);
+  }
+</style>
+
+<script>
+  function initMarkAsRead() {
+    const island = document.getElementById("mark-as-read-island");
+    if (!island) return;
+
+    const pageId = island.getAttribute("data-page-id");
+    const mode = island.getAttribute("data-mode") as "reference" | "scenario";
+    if (!pageId || !mode) return;
+
+    const btn = document.getElementById("mark-read-btn") as HTMLButtonElement;
+    const done = document.getElementById("mark-read-done") as HTMLSpanElement;
+    if (!btn || !done) return;
+
+    // Check if already read
+    function isRead(): boolean {
+      try {
+        const raw = localStorage.getItem("attackCatalog");
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        return !!data.pages?.[pageId!];
+      } catch {
+        return false;
+      }
+    }
+
+    function markRead(): void {
+      try {
+        const raw = localStorage.getItem("attackCatalog");
+        const data = raw ? JSON.parse(raw) : { pages: {}, achievements: [] };
+        if (!data.pages) data.pages = {};
+        if (data.pages[pageId!]) return;
+        data.pages[pageId!] = { readAt: Date.now(), mode };
+        localStorage.setItem("attackCatalog", JSON.stringify(data));
+      } catch {
+        // localStorage unavailable
+      }
+    }
+
+    function showDone(): void {
+      btn.style.display = "none";
+      done.style.display = "inline";
+    }
+
+    if (isRead()) {
+      showDone();
+      return;
+    }
+
+    // Show manual button
+    btn.style.display = "inline-block";
+
+    btn.addEventListener("click", () => {
+      markRead();
+      showDone();
+      // Dispatch custom event for achievement checking
+      document.dispatchEvent(new CustomEvent("attackCatalog:pageRead", { detail: { pageId, mode } }));
+    });
+
+    // Auto-detect: 80% scroll + 15 seconds
+    let scrollReached = false;
+    let timeReached = false;
+
+    const timer = setTimeout(() => {
+      timeReached = true;
+      if (scrollReached && !isRead()) {
+        markRead();
+        showDone();
+        document.dispatchEvent(new CustomEvent("attackCatalog:pageRead", { detail: { pageId, mode } }));
+      }
+    }, 15000);
+
+    function checkScroll() {
+      const scrollPercent =
+        (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
+      if (scrollPercent >= 0.8) {
+        scrollReached = true;
+        window.removeEventListener("scroll", checkScroll);
+        if (timeReached && !isRead()) {
+          markRead();
+          showDone();
+          document.dispatchEvent(new CustomEvent("attackCatalog:pageRead", { detail: { pageId, mode } }));
+        }
+      }
+    }
+
+    window.addEventListener("scroll", checkScroll);
+  }
+
+  document.addEventListener("DOMContentLoaded", initMarkAsRead);
+  document.addEventListener("astro:page-load", initMarkAsRead);
+</script>
