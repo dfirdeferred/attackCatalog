@@ -1,0 +1,99 @@
+---
+/**
+ * AchievementToast — client-side island.
+ * On page load and on 'attackCatalog:pageRead' events, checks for newly
+ * unlocked achievements and shows a terminal-styled toast notification.
+ */
+---
+
+<div id="achievement-toast-island"></div>
+
+<script>
+  const ACHIEVEMENTS_MAP: Record<string, { name: string; description: string }> = {
+    "first-contact": { name: "First Contact", description: "Read your first page" },
+    "role-player": { name: "Role Player", description: "Complete any role's reference path" },
+    "chain-breaker": { name: "Chain Breaker", description: "Complete any kill chain scenario" },
+    "c-suite-ready": { name: "C-Suite Ready", description: "Complete the C-Level reference path" },
+    "sysadmin-shield": { name: "Sysadmin Shield", description: "Complete the IT Admin reference path" },
+    "street-smart": { name: "Street Smart", description: "Complete the End User reference path" },
+    "red-badge": { name: "Red Badge", description: "Complete the Red Teamer reference path" },
+    "domain-defender": { name: "Domain Defender", description: "Complete The Domain Takeover scenario" },
+    "ghost-hunter": { name: "Ghost Hunter", description: "Complete The Silent Persistence scenario" },
+    "cloud-watcher": { name: "Cloud Watcher", description: "Complete The Cloud Bridge scenario" },
+    "key-master": { name: "Key Master", description: "Complete The Service Account Heist scenario" },
+    "zero-day-survivor": { name: "Zero Day Survivor", description: "Complete The Zero-Day Cascade scenario" },
+    "signal-catcher": { name: "Signal Catcher", description: "Complete The Physical Vector scenario" },
+    "prompt-guardian": { name: "Prompt Guardian", description: "Complete The AI-Assisted Breach scenario" },
+    "explorer": { name: "Explorer", description: "Read at least 1 page from every role" },
+    "omniscient": { name: "Omniscient", description: "100% completion across both modes" },
+  };
+
+  function showAchievementToast(achievementId: string): void {
+    const container = document.getElementById("toast-container") || document.body;
+    const info = ACHIEVEMENTS_MAP[achievementId];
+    if (!info) return;
+
+    const toast = document.createElement("div");
+    toast.className = "achievement-toast";
+    toast.innerHTML = `
+      <div class="toast-title">${info.name}</div>
+      <div class="toast-desc">${info.description}</div>
+    `;
+    container.appendChild(toast);
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      toast.classList.add("leaving");
+      setTimeout(() => toast.remove(), 300);
+    }, 5000);
+  }
+
+  function checkAndShowAchievements(): void {
+    try {
+      const raw = localStorage.getItem("attackCatalog");
+      if (!raw) return;
+
+      const data = JSON.parse(raw);
+      const pages = data.pages || {};
+      const currentAchievements: string[] = data.achievements || [];
+
+      // Simple inline achievement checks (mirrors achievements.ts logic)
+      const pageCount = Object.keys(pages).length;
+      const checks: [string, boolean][] = [
+        ["first-contact", pageCount >= 1],
+        [
+          "explorer",
+          ["c-level", "it-admin", "end-user", "red-teamer"].every(
+            (role) =>
+              Object.keys(pages).some(
+                (k) => k.startsWith(`ref:${role}:`) || k.startsWith(`scenario:${role}:`)
+              )
+          ),
+        ],
+      ];
+
+      const newlyUnlocked: string[] = [];
+      for (const [id, passed] of checks) {
+        if (passed && !currentAchievements.includes(id)) {
+          newlyUnlocked.push(id);
+        }
+      }
+
+      if (newlyUnlocked.length > 0) {
+        data.achievements = [...currentAchievements, ...newlyUnlocked];
+        localStorage.setItem("attackCatalog", JSON.stringify(data));
+
+        // Stagger toasts
+        newlyUnlocked.forEach((id, i) => {
+          setTimeout(() => showAchievementToast(id), i * 600);
+        });
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", checkAndShowAchievements);
+  document.addEventListener("astro:page-load", checkAndShowAchievements);
+  document.addEventListener("attackCatalog:pageRead", checkAndShowAchievements);
+</script>
