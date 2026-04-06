@@ -1,0 +1,24 @@
+---
+import ThreatBadge from "./ThreatBadge.astro";
+
+export interface Props {
+  mode: "professional" | "terminal";
+}
+
+const { mode } = Astro.props;
+const brandText = mode === "terminal" ? "attack_catalog" : "Attack Catalog";
+---
+
+<header class="site-header">
+  <div class="container">
+    <nav>
+      <a href="/" class="nav-brand">{brandText}</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/progress/">Progress</a></li>
+        <li><a href="/glossary/">Glossary</a></li>
+        <li><ThreatBadge /></li>
+      </ul>
+    </nav>
+  </div>
+</header>

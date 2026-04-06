@@ -1,0 +1,65 @@
+---
+/**
+ * ThreatBadge — displays the user's current threat level in the nav.
+ * Rendered as a static placeholder; hydrated client-side from localStorage.
+ */
+---
+
+<span class="threat-badge" id="threat-badge" data-level="vulnerable">
+  <span class="threat-badge-icon">&#9650;</span>
+  <span class="threat-badge-label">Vulnerable</span>
+</span>
+
+<style>
+  .threat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25em 0.65em;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .threat-badge-icon {
+    font-size: 0.625rem;
+  }
+
+  /* Level colors — set by JS updating data-level attribute */
+  .threat-badge[data-level="vulnerable"] { color: #cf222e; }
+  .threat-badge[data-level="aware"] { color: #d29922; }
+  .threat-badge[data-level="informed"] { color: #f0883e; }
+  .threat-badge[data-level="hardened"] { color: #58a6ff; }
+  .threat-badge[data-level="fortified"] { color: #3fb950; }
+  .threat-badge[data-level="impenetrable"] { color: #00ff41; }
+</style>
+
+<script>
+  function updateThreatBadge() {
+    const badge = document.getElementById("threat-badge");
+    if (!badge) return;
+
+    try {
+      const raw = localStorage.getItem("attackCatalog");
+      if (!raw) return;
+
+      const data = JSON.parse(raw);
+      const level = data.threatLevel || "vulnerable";
+      const label = badge.querySelector(".threat-badge-label");
+
+      badge.setAttribute("data-level", level);
+      if (label) {
+        label.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+      }
+    } catch {
+      // localStorage unavailable or corrupt — keep default
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", updateThreatBadge);
+  document.addEventListener("astro:page-load", updateThreatBadge);
+</script>
