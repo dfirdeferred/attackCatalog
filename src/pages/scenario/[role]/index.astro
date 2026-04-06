@@ -1,0 +1,42 @@
+---
+import TerminalLayout from "@layouts/TerminalLayout.astro";
+import ChainCard from "@components/ChainCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { ROLES, getRoleBySlug, isValidRoleSlug, type RoleSlug } from "@lib/roles";
+import { CHAINS } from "@lib/chains";
+
+export function getStaticPaths() {
+  return ROLES.map((role) => ({
+    params: { role: role.slug },
+  }));
+}
+
+const { role: roleSlug } = Astro.params;
+
+if (!isValidRoleSlug(roleSlug)) {
+  return Astro.redirect("/");
+}
+
+const role = getRoleBySlug(roleSlug as RoleSlug)!;
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: `Scenario: ${role.name}` },
+];
+---
+
+<TerminalLayout title={`Scenario Mode — ${role.name}`}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="scenario-hero">
+    <h1>// scenario_mode</h1>
+    <p>Role: <span style={`color: var(--role-${roleSlug});`}>{role.name}</span></p>
+    <p class="text-muted mt-1">7 kill chains. Make decisions as the attack unfolds.</p>
+  </section>
+
+  <div class="grid-2 mt-4">
+    {CHAINS.map((chain) => (
+      <ChainCard chain={chain} roleSlug={roleSlug as RoleSlug} />
+    ))}
+  </div>
+</TerminalLayout>

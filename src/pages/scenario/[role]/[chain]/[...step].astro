@@ -1,0 +1,132 @@
+---
+import TerminalLayout from "@layouts/TerminalLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ScenarioChoice from "@components/ScenarioChoice.astro";
+import { ROLES, getRoleBySlug, type RoleSlug } from "@lib/roles";
+import { CHAINS, getChainBySlug, type ChainSlug } from "@lib/chains";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const scenarios = await getCollection("scenarios");
+  const paths = [];
+
+  for (const scenario of scenarios) {
+    const chain = getChainBySlug(scenario.data.chain as ChainSlug);
+    if (!chain) continue;
+
+    // Regular scenario step
+    if (!scenario.data.isDebrief) {
+      paths.push({
+        params: {
+          role: scenario.data.role,
+          chain: scenario.data.chain,
+          step: scenario.data.attack,
+        },
+        props: { scenario, chain },
+      });
+    }
+
+    // Debrief path
+    if (scenario.data.isDebrief) {
+      paths.push({
+        params: {
+          role: scenario.data.role,
+          chain: scenario.data.chain,
+          step: "debrief",
+        },
+        props: { scenario, chain },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { scenario, chain } = Astro.props;
+const { role: roleSlug, chain: chainSlug, step } = Astro.params;
+const { Content } = await render(scenario);
+
+const role = getRoleBySlug(roleSlug as RoleSlug)!;
+const isDebrief = step === "debrief" || scenario.data.isDebrief;
+
+// Calculate chapter progress
+const currentIndex = chain.attacks.indexOf(scenario.data.attack as any);
+const totalChapters = chain.attacks.length;
+const chapterNumber = currentIndex + 1;
+
+// Build choice links
+const choices = scenario.data.choices.map((choice: { label: string; next: string }) => ({
+  label: choice.label,
+  href: `/scenario/${roleSlug}/${chainSlug}/${choice.next}/`,
+}));
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: `Scenario: ${role.name}`, href: `/scenario/${roleSlug}/` },
+  { label: chain.name, href: `/scenario/${roleSlug}/${chainSlug}/${chain.attacks[0]}/` },
+  { label: isDebrief ? "Debrief" : `Chapter ${chapterNumber}` },
+];
+
+const pageId = isDebrief
+  ? `scenario:${roleSlug}:${chainSlug}:debrief`
+  : `scenario:${roleSlug}:${chainSlug}:${scenario.data.attack}`;
+---
+
+<TerminalLayout title={scenario.data.title}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <article class="container-narrow">
+    {!isDebrief && (
+      <div class="chapter-progress">
+        Chapter <span class="current">{chapterNumber}</span> of {totalChapters} — {chain.name}
+      </div>
+    )}
+
+    <h1 style="font-family: var(--font-mono); font-size: 1.75rem; color: var(--color-green); margin-bottom: 1.5rem;">
+      {scenario.data.title}
+    </h1>
+
+    {isDebrief ? (
+      <div class="debrief">
+        <Content />
+        <div class="mt-4">
+          <h3 style="font-family: var(--font-mono); color: var(--color-amber); margin-bottom: 0.75rem;">
+            // explore in reference mode
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+            {chain.attacks.map((attack) => (
+              <a href={`/${roleSlug}/${attack}/`} class="reference-link">
+                {attack}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    ) : (
+      <>
+        <div class="scenario-narrative">
+          <Content />
+        </div>
+
+        <!-- Link to full reference article -->
+        <a href={`/${roleSlug}/${scenario.data.attack}/`} class="reference-link">
+          Read the full article
+        </a>
+
+        <!-- Branching choices -->
+        <ScenarioChoice choices={choices} />
+
+        {choices.length === 0 && (
+          <div class="mt-4">
+            <a href={`/scenario/${roleSlug}/${chainSlug}/debrief/`} class="scenario-choice" style="text-align: center;">
+              Mission complete. View debrief &rarr;
+            </a>
+          </div>
+        )}
+      </>
+    )}
+
+    <!-- Mark as Read placeholder — wired up in Task 12 -->
+    <div id="mark-as-read" data-page-id={pageId}></div>
+  </article>
+</TerminalLayout>
