@@ -1,0 +1,34 @@
+---
+import AttackCard from "./AttackCard.astro";
+import type { RoleSlug } from "@lib/roles";
+
+export interface Props {
+  attacks: {
+    slug: string;
+    title: string;
+    severity: string;
+    category: string;
+  }[];
+  roleSlug: RoleSlug;
+}
+
+const { attacks, roleSlug } = Astro.props;
+---
+
+{attacks.length > 0 && (
+  <section class="dig-deeper mt-6">
+    <h2 class="dig-deeper-heading mb-3">Dig Deeper</h2>
+    <div class="grid-2">
+      {attacks.map((attack) => (
+        <AttackCard attack={attack} roleSlug={roleSlug} />
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .dig-deeper-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+</style>

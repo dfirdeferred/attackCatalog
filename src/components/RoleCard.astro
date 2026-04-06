@@ -1,0 +1,26 @@
+---
+import { getRoleBySlug, type RoleSlug } from "@lib/roles";
+
+export interface Props {
+  roleSlug: RoleSlug;
+  mode: "reference" | "scenario";
+}
+
+const { roleSlug, mode } = Astro.props;
+const role = getRoleBySlug(roleSlug);
+
+if (!role) {
+  throw new Error(`Invalid role slug: ${roleSlug}`);
+}
+
+const href =
+  mode === "scenario" ? `/scenario/${role.slug}/` : `/${role.slug}/`;
+---
+
+<a href={href} class="role-card" data-role={role.slug}>
+  <h3>{role.name}</h3>
+  <p>{role.description}</p>
+  <span class="role-cta">
+    {mode === "scenario" ? "Play scenarios" : "Start path"} &rarr;
+  </span>
+</a>

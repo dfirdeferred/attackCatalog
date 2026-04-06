@@ -1,0 +1,44 @@
+---
+import { getRoleBySlug, type RoleSlug } from "@lib/roles";
+
+export interface Props {
+  roleSlug: RoleSlug;
+  attackSlug: string;
+}
+
+const { roleSlug, attackSlug } = Astro.props;
+const role = getRoleBySlug(roleSlug);
+
+if (!role) {
+  throw new Error(`Invalid role slug: ${roleSlug}`);
+}
+---
+
+<a
+  href={`/${roleSlug}/${attackSlug}/`}
+  class="cross-role-badge"
+  style={`--badge-color: ${role.colors.light};`}
+  title={`View as ${role.name}`}
+>
+  {role.name}
+</a>
+
+<style>
+  .cross-role-badge {
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid var(--badge-color);
+    color: var(--badge-color);
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .cross-role-badge:hover {
+    background-color: var(--badge-color);
+    color: #ffffff;
+    text-decoration: none;
+  }
+</style>

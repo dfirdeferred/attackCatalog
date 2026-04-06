@@ -1,0 +1,64 @@
+---
+import type { RoleSlug } from "@lib/roles";
+
+export interface Props {
+  attack: {
+    slug: string;
+    title: string;
+    severity: string;
+    category: string;
+  };
+  roleSlug: RoleSlug;
+}
+
+const { attack, roleSlug } = Astro.props;
+
+const severityClass = (() => {
+  switch (attack.severity) {
+    case "Critical":
+      return "badge-critical";
+    case "High":
+      return "badge-high";
+    case "Medium":
+      return "badge-medium";
+    case "Low":
+    case "Low-Medium":
+      return "badge-low";
+    default:
+      return "badge-medium";
+  }
+})();
+---
+
+<a href={`/${roleSlug}/${attack.slug}/`} class="card attack-card">
+  <div class="attack-card-header">
+    <span class={`badge ${severityClass}`}>{attack.severity}</span>
+    <span class="attack-card-category text-muted text-small">{attack.category}</span>
+  </div>
+  <h3 class="attack-card-title">{attack.title}</h3>
+</a>
+
+<style>
+  .attack-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .attack-card:hover {
+    text-decoration: none;
+  }
+
+  .attack-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .attack-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+</style>
