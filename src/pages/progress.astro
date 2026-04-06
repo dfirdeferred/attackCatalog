@@ -1,0 +1,199 @@
+---
+import ProfessionalLayout from "@layouts/ProfessionalLayout.astro";
+import ProgressBar from "@components/ProgressBar.astro";
+import { ROLES } from "@lib/roles";
+import { CHAINS } from "@lib/chains";
+import { ACHIEVEMENTS } from "@lib/achievements";
+---
+
+<ProfessionalLayout title="Progress Dashboard">
+  <h1 class="mb-4">Progress Dashboard</h1>
+
+  <!-- Overall completion -->
+  <section class="mb-6" id="overall-section">
+    <div class="card" style="text-align: center; padding: 2rem;">
+      <div class="overall-percentage" id="overall-percentage" style="font-size: 3rem; font-weight: 800; color: var(--color-link);">
+        0%
+      </div>
+      <div class="text-muted mt-1">Overall Completion</div>
+      <div class="threat-level-display mt-2" id="threat-level-display" style="font-size: 1.125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+        Vulnerable
+      </div>
+    </div>
+  </section>
+
+  <!-- Per-role progress (Reference Mode) -->
+  <section class="mb-6">
+    <h2 class="mb-3" style="font-size: 1.25rem; font-weight: 700;">Reference Mode</h2>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      {ROLES.map((role) => (
+        <div id={`role-progress-${role.slug}`}>
+          <ProgressBar
+            progress={{ read: 0, total: 33 }}
+            color={role.colors.light}
+            label={role.name}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Per-chain progress (Scenario Mode) -->
+  <section class="mb-6">
+    <h2 class="mb-3" style="font-size: 1.25rem; font-weight: 700;">Scenario Mode</h2>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      {CHAINS.map((chain) => (
+        <div id={`chain-progress-${chain.slug}`}>
+          <ProgressBar
+            progress={{ read: 0, total: chain.attacks.length }}
+            color="var(--color-link)"
+            label={chain.name}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Achievements grid -->
+  <section class="mb-6">
+    <h2 class="mb-3" style="font-size: 1.25rem; font-weight: 700;">Achievements</h2>
+    <div class="grid-2x2" id="achievements-grid">
+      {ACHIEVEMENTS.map((achievement) => (
+        <div class="card achievement-card" id={`achievement-${achievement.id}`} data-achievement-id={achievement.id} style="opacity: 0.4;">
+          <div style="font-size: 0.875rem; font-weight: 700;">{achievement.name}</div>
+          <div class="text-muted text-small">{achievement.description}</div>
+          <div class="achievement-status text-small mt-1" style="color: var(--color-muted);">
+            Locked
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Clear progress -->
+  <section class="mb-6 text-center">
+    <button
+      id="clear-progress-btn"
+      type="button"
+      style="padding: 0.5rem 1.5rem; border: 1px solid var(--severity-critical-text, #cf222e); border-radius: 6px; background: none; color: var(--severity-critical-text, #cf222e); font-size: 0.875rem; font-weight: 600; cursor: pointer;"
+    >
+      Clear all progress
+    </button>
+  </section>
+</ProfessionalLayout>
+
+<script>
+  function updateDashboard() {
+    try {
+      const raw = localStorage.getItem("attackCatalog");
+      const data = raw ? JSON.parse(raw) : { pages: {}, achievements: [] };
+      const pages = data.pages || {};
+      const achievements: string[] = data.achievements || [];
+      const totalPages = Object.keys(pages).length;
+
+      // Calculate totals
+      const TOTAL_ATTACKS = 33;
+      const ROLE_SLUGS = ["c-level", "it-admin", "end-user", "red-teamer"];
+      const CHAIN_DATA: { slug: string; count: number }[] = [
+        { slug: "domain-takeover", count: 7 },
+        { slug: "silent-persistence", count: 6 },
+        { slug: "cloud-bridge", count: 5 },
+        { slug: "service-account-heist", count: 6 },
+        { slug: "zero-day-cascade", count: 6 },
+        { slug: "physical-vector", count: 5 },
+        { slug: "ai-breach", count: 4 },
+      ];
+
+      const refTotal = TOTAL_ATTACKS * ROLE_SLUGS.length;
+      let scenTotal = 0;
+      for (const c of CHAIN_DATA) scenTotal += c.count * ROLE_SLUGS.length;
+      const grandTotal = refTotal + scenTotal;
+      const percentage = grandTotal > 0 ? Math.round((totalPages / grandTotal) * 100) : 0;
+
+      // Overall
+      const overallEl = document.getElementById("overall-percentage");
+      if (overallEl) overallEl.textContent = `${percentage}%`;
+
+      // Threat level
+      const threatEl = document.getElementById("threat-level-display");
+      if (threatEl) {
+        let level = "Vulnerable";
+        if (percentage >= 100) level = "Impenetrable";
+        else if (percentage >= 75) level = "Fortified";
+        else if (percentage >= 50) level = "Hardened";
+        else if (percentage >= 30) level = "Informed";
+        else if (percentage >= 10) level = "Aware";
+        threatEl.textContent = level;
+      }
+
+      // Per-role progress bars
+      for (const role of ROLE_SLUGS) {
+        const count = Object.keys(pages).filter((k) => k.startsWith(`ref:${role}:`)).length;
+        const wrapper = document.getElementById(`role-progress-${role}`);
+        if (wrapper) {
+          const fill = wrapper.querySelector<HTMLElement>(".progress-bar-fill");
+          const label = wrapper.querySelector<HTMLElement>(".text-muted.text-small");
+          if (fill) fill.style.width = `${Math.round((count / TOTAL_ATTACKS) * 100)}%`;
+          if (label) label.textContent = `${count}/${TOTAL_ATTACKS} (${Math.round((count / TOTAL_ATTACKS) * 100)}%)`;
+        }
+      }
+
+      // Per-chain progress bars (show best role)
+      for (const chain of CHAIN_DATA) {
+        let bestCount = 0;
+        for (const role of ROLE_SLUGS) {
+          const count = Object.keys(pages).filter((k) =>
+            k.startsWith(`scenario:${role}:${chain.slug}:`)
+          ).length;
+          if (count > bestCount) bestCount = count;
+        }
+        const wrapper = document.getElementById(`chain-progress-${chain.slug}`);
+        if (wrapper) {
+          const fill = wrapper.querySelector<HTMLElement>(".progress-bar-fill");
+          const label = wrapper.querySelector<HTMLElement>(".text-muted.text-small");
+          if (fill) fill.style.width = `${Math.round((bestCount / chain.count) * 100)}%`;
+          if (label) label.textContent = `${bestCount}/${chain.count} (${Math.round((bestCount / chain.count) * 100)}%)`;
+        }
+      }
+
+      // Achievements
+      for (const card of document.querySelectorAll<HTMLElement>(".achievement-card")) {
+        const id = card.getAttribute("data-achievement-id");
+        const statusEl = card.querySelector<HTMLElement>(".achievement-status");
+        if (id && achievements.includes(id)) {
+          card.style.opacity = "1";
+          if (statusEl) {
+            statusEl.textContent = "Unlocked";
+            statusEl.style.color = "#1a7f37";
+          }
+        }
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  }
+
+  function initClearButton() {
+    const btn = document.getElementById("clear-progress-btn");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      if (confirm("Are you sure you want to clear all progress? This cannot be undone.")) {
+        try {
+          localStorage.removeItem("attackCatalog");
+          updateDashboard();
+        } catch {
+          // localStorage unavailable
+        }
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateDashboard();
+    initClearButton();
+  });
+  document.addEventListener("astro:page-load", () => {
+    updateDashboard();
+    initClearButton();
+  });
+</script>
