@@ -1,0 +1,72 @@
+---
+import ProfessionalLayout from "@layouts/ProfessionalLayout.astro";
+import AttackCard from "@components/AttackCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { ROLES, getRoleBySlug, isValidRoleSlug, type RoleSlug } from "@lib/roles";
+import { getCollection } from "astro:content";
+
+export function getStaticPaths() {
+  return ROLES.map((role) => ({
+    params: { role: role.slug },
+  }));
+}
+
+const { role: roleSlug } = Astro.params;
+
+if (!isValidRoleSlug(roleSlug)) {
+  return Astro.redirect("/");
+}
+
+const role = getRoleBySlug(roleSlug as RoleSlug)!;
+const allAttacks = await getCollection("attacks");
+
+// Group attacks by category
+const attacksByCategory = new Map<string, typeof allAttacks>();
+for (const attack of allAttacks) {
+  const category = attack.data.category;
+  if (!attacksByCategory.has(category)) {
+    attacksByCategory.set(category, []);
+  }
+  attacksByCategory.get(category)!.push(attack);
+}
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: role.name },
+];
+---
+
+<ProfessionalLayout title={role.name}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <header class="mb-6">
+    <h1 style={`color: ${role.colors.light};`}>{role.name}</h1>
+    <p class="text-muted mt-1">{role.description}</p>
+  </header>
+
+  <!-- Progress bar placeholder — wired up in Task 12 -->
+  <div class="progress-bar mb-6" id={`progress-${roleSlug}`}>
+    <div class="progress-bar-fill" style={`width: 0%; background-color: ${role.colors.light};`}></div>
+  </div>
+
+  {[...attacksByCategory.entries()].map(([category, attacks]) => (
+    <section class="mb-6">
+      <h2 class="mb-3" style="font-size: 1.25rem; font-weight: 700;">
+        {category}
+      </h2>
+      <div class="grid-2">
+        {attacks.map((attack) => (
+          <AttackCard
+            attack={{
+              slug: attack.data.slug || attack.id.replace(/\.mdx?$/, ''),
+              title: attack.data.title,
+              severity: attack.data.severity,
+              category: attack.data.category,
+            }}
+            roleSlug={roleSlug as RoleSlug}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+</ProfessionalLayout>

@@ -1,0 +1,127 @@
+---
+import ProfessionalLayout from "@layouts/ProfessionalLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import DigDeeper from "@components/DigDeeper.astro";
+import CrossRoleBadge from "@components/CrossRoleBadge.astro";
+import { ROLES, getRoleBySlug, isValidRoleSlug, type RoleSlug } from "@lib/roles";
+import { getChainsForAttack, type AttackSlug } from "@lib/chains";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const attacks = await getCollection("attacks");
+  const paths = [];
+
+  for (const role of ROLES) {
+    for (const attack of attacks) {
+      const slug = attack.data.slug || attack.id.replace(/\.mdx?$/, '');
+      paths.push({
+        params: { role: role.slug, slug },
+        props: { attack, role },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { attack, role } = Astro.props;
+const { Content } = await render(attack);
+
+const roleSlug = role.slug as RoleSlug;
+const roleData = attack.data.roles[roleSlug];
+const otherRoles = ROLES.filter((r) => r.slug !== roleSlug);
+
+const attackSlug = attack.data.slug || attack.id.replace(/\.mdx?$/, '');
+
+// Get related attacks from the same category for "Dig Deeper"
+const allAttacks = await getCollection("attacks");
+const relatedAttacks = allAttacks
+  .filter(
+    (a) =>
+      a.data.category === attack.data.category &&
+      (a.data.slug || a.id.replace(/\.mdx?$/, '')) !== attackSlug
+  )
+  .slice(0, 4)
+  .map((a) => ({
+    slug: a.data.slug || a.id.replace(/\.mdx?$/, ''),
+    title: a.data.title,
+    severity: a.data.severity,
+    category: a.data.category,
+  }));
+
+// Get kill chains this attack appears in
+const chains = getChainsForAttack(attackSlug as AttackSlug);
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: role.name, href: `/${roleSlug}/` },
+  { label: attack.data.title },
+];
+---
+
+<ProfessionalLayout title={attack.data.title}>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <article class="container-narrow">
+    <!-- Header -->
+    <header class="mb-4">
+      <div class="mb-2">
+        <span class={`badge badge-${attack.data.severity.toLowerCase().replace("-", "")}`}>
+          {attack.data.severity}
+        </span>
+        <span class="text-muted text-small" style="margin-left: 0.5rem;">
+          {attack.data.category}
+        </span>
+      </div>
+      <h1>{attack.data.title}</h1>
+    </header>
+
+    <!-- Role-specific intro -->
+    <section class="role-intro mb-4" style={`border-left: 4px solid ${role.colors.light}; padding-left: 1rem;`}>
+      <p>{roleData.intro}</p>
+    </section>
+
+    <!-- Why you care -->
+    <section class="why-you-care mb-4" style="background-color: var(--color-code-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+      <h2 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">
+        Why You Care
+      </h2>
+      <p class="text-small">{roleData.whyCare}</p>
+    </section>
+
+    <!-- Article content -->
+    <div class="article-content mb-6">
+      <Content />
+    </div>
+
+    <!-- Cross-role badges -->
+    <section class="cross-roles mb-4">
+      <h3 class="text-small text-muted mb-1">See this attack from another perspective:</h3>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        {otherRoles.map((otherRole) => (
+          <CrossRoleBadge roleSlug={otherRole.slug} attackSlug={attackSlug} />
+        ))}
+      </div>
+    </section>
+
+    <!-- See in Scenario Mode -->
+    {chains.length > 0 && (
+      <section class="scenario-links mb-6">
+        <h3 class="text-small text-muted mb-1">See this in Scenario Mode:</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+          {chains.map((chain) => (
+            <a href={`/scenario/${roleSlug}/${chain.slug}/${attackSlug}/`} class="text-small">
+              {chain.name} &rarr;
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Dig Deeper -->
+    <DigDeeper attacks={relatedAttacks} roleSlug={roleSlug} />
+
+    <!-- Mark as Read placeholder — wired up in Task 12 -->
+    <div id="mark-as-read" data-page-id={`ref:${roleSlug}:${attackSlug}`}></div>
+  </article>
+</ProfessionalLayout>
