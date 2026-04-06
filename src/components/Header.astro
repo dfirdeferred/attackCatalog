@@ -30,10 +30,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     if (!el) return;
     try {
       const raw = localStorage.getItem("attackCatalog");
-      if (!raw) { el.textContent = "0 pages read"; return; }
+      if (!raw) { el.textContent = "0%"; return; }
       const data = JSON.parse(raw);
       const count = Object.keys(data.pages || {}).length;
-      el.textContent = `${count} page${count !== 1 ? 's' : ''} read`;
+      const pct = Math.min(Math.round((count / 132) * 100), 100);
+      el.textContent = `${pct}%`;
     } catch { el.textContent = ""; }
   }
   document.addEventListener("DOMContentLoaded", updatePagesRead);
