@@ -41,8 +41,9 @@
     margin-bottom: 0.25rem;
   }
 
-  .achievement-toast .toast-title::before {
-    content: "\1F3C6 ";
+  .achievement-toast .toast-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .achievement-toast .toast-desc {
@@ -62,23 +63,23 @@
 </style>
 
 <script>
-  const ACHIEVEMENTS_MAP: Record<string, { name: string; description: string }> = {
-    "first-contact": { name: "First Contact", description: "Read your first page" },
-    "role-player": { name: "Role Player", description: "Complete any role's reference path" },
-    "chain-breaker": { name: "Chain Breaker", description: "Complete any kill chain scenario" },
-    "c-suite-ready": { name: "C-Suite Ready", description: "Complete the C-Level reference path" },
-    "sysadmin-shield": { name: "Sysadmin Shield", description: "Complete the IT Admin reference path" },
-    "street-smart": { name: "Street Smart", description: "Complete the End User reference path" },
-    "red-badge": { name: "Red Badge", description: "Complete the Red Teamer reference path" },
-    "domain-defender": { name: "Domain Defender", description: "Complete The Domain Takeover scenario" },
-    "ghost-hunter": { name: "Ghost Hunter", description: "Complete The Silent Persistence scenario" },
-    "cloud-watcher": { name: "Cloud Watcher", description: "Complete The Cloud Bridge scenario" },
-    "key-master": { name: "Key Master", description: "Complete The Service Account Heist scenario" },
-    "zero-day-survivor": { name: "Zero Day Survivor", description: "Complete The Zero-Day Cascade scenario" },
-    "signal-catcher": { name: "Signal Catcher", description: "Complete The Physical Vector scenario" },
-    "prompt-guardian": { name: "Prompt Guardian", description: "Complete The AI-Assisted Breach scenario" },
-    "explorer": { name: "Explorer", description: "Read at least 1 page from every role" },
-    "omniscient": { name: "Omniscient", description: "100% completion across both modes" },
+  const ACHIEVEMENTS_MAP: Record<string, { name: string; icon: string; description: string }> = {
+    "first-contact": { name: "First Contact", icon: "\u{1F441}\uFE0F", description: "Read your first page" },
+    "role-player": { name: "Role Player", icon: "\u{1F3AD}", description: "Complete any role's reference path" },
+    "chain-breaker": { name: "Chain Breaker", icon: "\u26D3\uFE0F", description: "Complete any kill chain scenario" },
+    "c-suite-ready": { name: "C-Suite Ready", icon: "\u{1F4BC}", description: "Complete the C-Level reference path" },
+    "sysadmin-shield": { name: "Sysadmin Shield", icon: "\u{1F6E1}\uFE0F", description: "Complete the IT Admin reference path" },
+    "street-smart": { name: "Street Smart", icon: "\u{1F9E0}", description: "Complete the End User reference path" },
+    "red-badge": { name: "Red Badge", icon: "\u{1F3AF}", description: "Complete the Red Teamer reference path" },
+    "domain-defender": { name: "Domain Defender", icon: "\u{1F3F0}", description: "Complete The Domain Takeover scenario" },
+    "ghost-hunter": { name: "Ghost Hunter", icon: "\u{1F47B}", description: "Complete The Silent Persistence scenario" },
+    "cloud-watcher": { name: "Cloud Watcher", icon: "\u2601\uFE0F", description: "Complete The Cloud Bridge scenario" },
+    "key-master": { name: "Key Master", icon: "\u{1F511}", description: "Complete The Service Account Heist scenario" },
+    "zero-day-survivor": { name: "Zero Day Survivor", icon: "\u{1F4A5}", description: "Complete The Zero-Day Cascade scenario" },
+    "signal-catcher": { name: "Signal Catcher", icon: "\u{1F4E1}", description: "Complete The Physical Vector scenario" },
+    "prompt-guardian": { name: "Prompt Guardian", icon: "\u{1F916}", description: "Complete The AI-Assisted Breach scenario" },
+    "explorer": { name: "Explorer", icon: "\u{1F9ED}", description: "Read at least 1 page from every role" },
+    "omniscient": { name: "Omniscient", icon: "\u{1F451}", description: "100% completion across both modes" },
   };
 
   function showAchievementToast(achievementId: string): void {
@@ -89,6 +90,7 @@
     const toast = document.createElement("div");
     toast.className = "achievement-toast";
     toast.innerHTML = `
+      <div class="toast-icon">${info.icon}</div>
       <div class="toast-title">${info.name}</div>
       <div class="toast-desc">${info.description}</div>
     `;

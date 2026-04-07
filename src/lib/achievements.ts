@@ -7,6 +7,7 @@ const TOTAL_ATTACKS = 33;
 export interface Achievement {
   id: string;
   name: string;
+  icon: string;
   description: string;
   check: (state: ProgressState) => boolean;
 }
@@ -58,90 +59,105 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: "first-contact",
     name: "First Contact",
+    icon: "\u{1F441}\uFE0F",
     description: "Read your first page",
     check: (state) => Object.keys(state.pages).length >= 1,
   },
   {
     id: "role-player",
     name: "Role Player",
+    icon: "\u{1F3AD}",
     description: "Complete any role's reference path",
     check: (state) => isAnyRoleRefComplete(state),
   },
   {
     id: "chain-breaker",
     name: "Chain Breaker",
+    icon: "\u26D3\uFE0F",
     description: "Complete any kill chain scenario",
     check: (state) => isAnyChainComplete(state),
   },
   {
     id: "c-suite-ready",
     name: "C-Suite Ready",
+    icon: "\u{1F4BC}",
     description: "Complete the C-Level reference path",
     check: (state) => isRoleRefComplete(state, "c-level"),
   },
   {
     id: "sysadmin-shield",
     name: "Sysadmin Shield",
+    icon: "\u{1F6E1}\uFE0F",
     description: "Complete the IT Admin reference path",
     check: (state) => isRoleRefComplete(state, "it-admin"),
   },
   {
     id: "street-smart",
     name: "Street Smart",
+    icon: "\u{1F9E0}",
     description: "Complete the End User reference path",
     check: (state) => isRoleRefComplete(state, "end-user"),
   },
   {
     id: "red-badge",
     name: "Red Badge",
+    icon: "\u{1F3AF}",
     description: "Complete the Red Teamer reference path",
     check: (state) => isRoleRefComplete(state, "red-teamer"),
   },
   {
     id: "domain-defender",
     name: "Domain Defender",
+    icon: "\u{1F3F0}",
     description: "Complete The Domain Takeover scenario",
     check: (state) => isChainComplete(state, "domain-takeover"),
   },
   {
     id: "ghost-hunter",
     name: "Ghost Hunter",
+    icon: "\u{1F47B}",
     description: "Complete The Silent Persistence scenario",
     check: (state) => isChainComplete(state, "silent-persistence"),
   },
   {
     id: "cloud-watcher",
     name: "Cloud Watcher",
+    icon: "\u2601\uFE0F",
     description: "Complete The Cloud Bridge scenario",
     check: (state) => isChainComplete(state, "cloud-bridge"),
   },
   {
     id: "key-master",
     name: "Key Master",
+    icon: "\u{1F511}",
     description: "Complete The Service Account Heist scenario",
     check: (state) => isChainComplete(state, "service-account-heist"),
   },
   {
     id: "zero-day-survivor",
     name: "Zero Day Survivor",
+    icon: "\u{1F4A5}",
     description: "Complete The Zero-Day Cascade scenario",
     check: (state) => isChainComplete(state, "zero-day-cascade"),
   },
   {
     id: "signal-catcher",
     name: "Signal Catcher",
+    icon: "\u{1F4E1}",
     description: "Complete The Physical Vector scenario",
     check: (state) => isChainComplete(state, "physical-vector"),
   },
   {
     id: "prompt-guardian",
     name: "Prompt Guardian",
+    icon: "\u{1F916}",
     description: "Complete The AI-Assisted Breach scenario",
     check: (state) => isChainComplete(state, "ai-breach"),
   },
   {
     id: "explorer",
     name: "Explorer",
+    icon: "\u{1F9ED}",
     description: "Read at least 1 page from every role",
     check: (state) =>
       ROLE_SLUGS.every(
@@ -153,6 +169,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: "omniscient",
     name: "Omniscient",
+    icon: "\u{1F451}",
     description: "100% completion across both modes",
     check: (state) => Object.keys(state.pages).length >= getTotalPages(),
   },
