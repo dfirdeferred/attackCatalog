@@ -1,0 +1,91 @@
+{
+  "$ref": "#/definitions/attacks",
+  "definitions": {
+    "attacks": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Low-Medium",
+            "Medium",
+            "High",
+            "Critical"
+          ]
+        },
+        "category": {
+          "type": "string"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "killChains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "roles": {
+          "type": "object",
+          "properties": {
+            "c-level": {
+              "type": "object",
+              "properties": {
+                "intro": {
+                  "type": "string"
+                },
+                "whyCare": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "intro",
+                "whyCare"
+              ],
+              "additionalProperties": false
+            },
+            "it-admin": {
+              "$ref": "#/definitions/attacks/properties/roles/properties/c-level"
+            },
+            "end-user": {
+              "$ref": "#/definitions/attacks/properties/roles/properties/c-level"
+            },
+            "red-teamer": {
+              "$ref": "#/definitions/attacks/properties/roles/properties/c-level"
+            }
+          },
+          "required": [
+            "c-level",
+            "it-admin",
+            "end-user",
+            "red-teamer"
+          ],
+          "additionalProperties": false
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "severity",
+        "category",
+        "targets",
+        "roles"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

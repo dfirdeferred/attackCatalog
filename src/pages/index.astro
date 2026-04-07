@@ -9,13 +9,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <section class="hero">
     <img src={`${base}/images/netwrix-logo-dark.svg`} alt="Netwrix" style="height: 32px; margin: 0 auto 1rem;" />
     <h1>Attack Catalog</h1>
-    <p>A Netwrix interactive guide to understanding, detecting, and defending against 33 cyber attack vectors.</p>
+    <p>A Netwrix interactive guide to understanding, detecting, and defending against cyber attacks.</p>
   </section>
 
   <!-- Mode Selection -->
   <section class="mt-6 mb-6">
     <div class="grid-2">
-      <a href="#roles" class="mode-card mode-reference" id="mode-reference">
+      <a href={`${base}/c-level/`} class="mode-card mode-reference" id="mode-reference">
         <h2>Learn at Your Own Pace</h2>
         <p>
           Browse 33 attack techniques organized by category. Read at your own pace
@@ -42,7 +42,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <!-- Role Selection -->
   <section id="roles" class="mt-4 mb-8">
     <h2 class="text-center mb-4" style="font-size:1.5rem; font-weight:700;">
-      Choose Your Role
+      Choose Your Scenario Role
     </h2>
     <div class="grid-2x2" id="role-grid" data-base={base}>
       {ROLES.map((role) => (
@@ -109,11 +109,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
     }
 
-    refCard.addEventListener("click", (e) => {
-      e.preventDefault();
-      setMode("reference");
-      document.getElementById("roles")?.scrollIntoView({ behavior: "smooth" });
-    });
+    // Reference mode goes directly to IT Manager role — no role selection needed
+    // (the link href already points to /c-level/, so no JS override needed)
 
     scenCard.addEventListener("click", (e) => {
       e.preventDefault();
@@ -121,15 +118,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       document.getElementById("roles")?.scrollIntoView({ behavior: "smooth" });
     });
 
-    // Restore previous mode selection
-    try {
-      const saved = sessionStorage.getItem("attackCatalog-mode");
-      if (saved === "scenario" || saved === "reference") {
-        setMode(saved);
-      }
-    } catch {
-      // sessionStorage unavailable
-    }
+    // Default to scenario mode for role selection display
+    setMode("scenario");
   }
 
   document.addEventListener("DOMContentLoaded", initModeSelection);

@@ -1,0 +1,23 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1275_4130)">
+<rect width="108" height="108" transform="matrix(1 0 0 -1 431.999 1080)" fill="#9B97E9"/>
+<rect x="647.999" width="108" height="108" fill="#5851DB"/>
+<rect x="647.999" y="108" width="108" height="108" fill="#5851DB"/>
+<rect x="647.999" y="756" width="108" height="108" fill="#9B97E9"/>
+<rect x="755.999" width="108" height="108" fill="#5851DB"/>
+<rect x="755.999" y="108" width="108" height="108" fill="#5851DB"/>
+<rect width="108" height="108" transform="matrix(1 0 0 -1 755.999 1080)" fill="#FCFAF5"/>
+<rect width="108" height="108" transform="matrix(1 0 0 -1 755.999 972)" fill="#FCFAF5"/>
+<rect x="864" y="216" width="108" height="108" fill="#FCFAF5"/>
+<rect x="864" y="864" width="108" height="108" fill="#FCFAF5"/>
+<rect x="864" y="972" width="108" height="108" fill="#FCFAF5"/>
+<rect x="972" width="108" height="108" fill="#FCFAF5"/>
+<rect x="972" y="108" width="108" height="108" fill="#FCFAF5"/>
+<rect x="972" y="756" width="108" height="108" fill="#5851DB"/>
+</g>
+<defs>
+<clipPath id="clip0_1275_4130">
+<rect width="1080" height="1080" fill="white"/>
+</clipPath>
+</defs>
+</svg>
