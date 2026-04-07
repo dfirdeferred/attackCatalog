@@ -3,47 +3,47 @@
    ============================================================ */
 
 :root {
-  /* --- Fonts --- */
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
+  /* --- Fonts (Netwrix brand) --- */
+  --font-body: "Syne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Hubot Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
 
-  /* --- Base colors --- */
-  --color-bg: #f8f9fa;
-  --color-text: #24292f;
-  --color-muted: #57606a;
-  --color-link: #0550ae;
-  --color-border: #d0d7de;
-  --color-border-hover: #8b949e;
+  /* --- Base colors (Netwrix primary palette) --- */
+  --color-bg: #FCFAF5;           /* Access White */
+  --color-text: #1A1536;          /* Nightwatch */
+  --color-muted: #767386;         /* Nightwatch 400 */
+  --color-link: #5851DB;          /* Vigilant Blue */
+  --color-border: #E2E1DC;        /* Access White 200 */
+  --color-border-hover: #5851DB;  /* Vigilant Blue */
 
   /* --- Card --- */
   --color-card-bg: #ffffff;
-  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 4px 12px rgba(88, 81, 219, 0.1);
 
   /* --- Code --- */
-  --color-code-bg: #eff1f3;
-  --color-pre-bg: #24292f;
+  --color-code-bg: #F0EFE8;       /* slightly darker Access White */
+  --color-pre-bg: #1A1536;        /* Nightwatch */
 
   /* --- Header --- */
-  --color-header-bg: #ffffff;
-  --color-header-border: #d0d7de;
-  --color-header-text: #24292f;
+  --color-header-bg: #1A1536;     /* Nightwatch - dark header */
+  --color-header-border: #2a2550;
+  --color-header-text: #FCFAF5;   /* Access White */
 
-  /* --- Role colors (light) --- */
-  --role-c-level: #cf222e;
-  --role-it-admin: #0550ae;
-  --role-end-user: #1a7f37;
-  --role-red-teamer: #9a6700;
+  /* --- Role colors (using Netwrix palette) --- */
+  --role-c-level: #F36A1D;        /* Flashpoint Orange */
+  --role-it-admin: #5851DB;       /* Vigilant Blue */
+  --role-end-user: #41F27C;       /* Beacon Green */
+  --role-red-teamer: #F4B400;     /* Signal Yellow */
 
   /* --- Severity badges --- */
-  --severity-critical-bg: #ffebe9;
-  --severity-critical-text: #cf222e;
-  --severity-high-bg: #fff8c5;
+  --severity-critical-bg: #FDE1D2;
+  --severity-critical-text: #F36A1D;
+  --severity-high-bg: #FDF0CC;
   --severity-high-text: #9a6700;
-  --severity-medium-bg: #ddf4ff;
-  --severity-medium-text: #0550ae;
-  --severity-low-bg: #dafbe1;
-  --severity-low-text: #1a7f37;
+  --severity-medium-bg: #DEDCF8;
+  --severity-medium-text: #5851DB;
+  --severity-low-bg: #D9FCE5;
+  --severity-low-text: #27914A;
 }
 
 /* --- Header --- */
@@ -75,14 +75,14 @@
 }
 
 .site-header .nav-links a {
-  color: var(--color-muted);
+  color: rgba(252, 250, 245, 0.7);
   font-size: 0.875rem;
   font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .site-header .nav-links a:hover {
-  color: var(--color-text);
+  color: #FCFAF5;
   text-decoration: none;
 }
 
@@ -122,7 +122,7 @@
 
 .mode-card:hover {
   border-color: var(--color-link);
-  box-shadow: 0 4px 16px rgba(5, 80, 174, 0.12);
+  box-shadow: 0 4px 16px rgba(88, 81, 219, 0.12);
   text-decoration: none;
 }
 
@@ -189,22 +189,22 @@
 }
 
 .role-card[data-role="c-level"] { border-left: 4px solid var(--role-c-level); }
-.role-card[data-role="c-level"]:hover { border-color: var(--role-c-level); box-shadow: 0 4px 12px rgba(207, 34, 46, 0.1); }
+.role-card[data-role="c-level"]:hover { border-color: var(--role-c-level); box-shadow: 0 4px 12px rgba(243, 106, 29, 0.1); }
 .role-card[data-role="c-level"] h3 { color: var(--role-c-level); }
 .role-card[data-role="c-level"] .role-cta { color: var(--role-c-level); }
 
 .role-card[data-role="it-admin"] { border-left: 4px solid var(--role-it-admin); }
-.role-card[data-role="it-admin"]:hover { border-color: var(--role-it-admin); box-shadow: 0 4px 12px rgba(5, 80, 174, 0.1); }
+.role-card[data-role="it-admin"]:hover { border-color: var(--role-it-admin); box-shadow: 0 4px 12px rgba(88, 81, 219, 0.1); }
 .role-card[data-role="it-admin"] h3 { color: var(--role-it-admin); }
 .role-card[data-role="it-admin"] .role-cta { color: var(--role-it-admin); }
 
 .role-card[data-role="end-user"] { border-left: 4px solid var(--role-end-user); }
-.role-card[data-role="end-user"]:hover { border-color: var(--role-end-user); box-shadow: 0 4px 12px rgba(26, 127, 55, 0.1); }
+.role-card[data-role="end-user"]:hover { border-color: var(--role-end-user); box-shadow: 0 4px 12px rgba(65, 242, 124, 0.1); }
 .role-card[data-role="end-user"] h3 { color: var(--role-end-user); }
 .role-card[data-role="end-user"] .role-cta { color: var(--role-end-user); }
 
 .role-card[data-role="red-teamer"] { border-left: 4px solid var(--role-red-teamer); }
-.role-card[data-role="red-teamer"]:hover { border-color: var(--role-red-teamer); box-shadow: 0 4px 12px rgba(154, 103, 0, 0.1); }
+.role-card[data-role="red-teamer"]:hover { border-color: var(--role-red-teamer); box-shadow: 0 4px 12px rgba(244, 180, 0, 0.1); }
 .role-card[data-role="red-teamer"] h3 { color: var(--role-red-teamer); }
 .role-card[data-role="red-teamer"] .role-cta { color: var(--role-red-teamer); }
 
