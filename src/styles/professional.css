@@ -86,24 +86,67 @@
   text-decoration: none;
 }
 
+/* --- Hero wrapper (dark Nightwatch) --- */
+.hero-wrapper {
+  position: relative;
+  background-color: #1A1536;
+  overflow: hidden;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: -2rem;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(88, 81, 219, 0.2) 0%, rgba(65, 242, 124, 0.05) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* --- Hero section --- */
 .hero {
+  position: relative;
+  z-index: 2;
   text-align: center;
-  padding: 4rem 0 2rem;
+  padding: 6rem 0 4rem;
 }
 
 .hero h1 {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 800;
-  color: var(--color-text);
+  color: #FCFAF5;
   margin-bottom: 0.75rem;
 }
 
 .hero p {
-  font-size: 1.125rem;
-  color: var(--color-muted);
+  font-size: 1.25rem;
+  color: rgba(252, 250, 245, 0.7);
   max-width: 600px;
   margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .hero h1 {
+    font-size: 2.25rem;
+  }
+  .hero {
+    padding: 4rem 0 3rem;
+  }
 }
 
 /* --- Mode cards --- */
